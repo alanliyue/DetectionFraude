@@ -1,7 +1,7 @@
 # On importe le dataset
 
 import pandas as pd
-df = pd.read_csv(Projet_fraude.csv, sep=",")
+df = pd.read_csv("Projet_fraude.csv", sep=",")
 
 # On importe toutes les librairies dont on aura besoin
 
