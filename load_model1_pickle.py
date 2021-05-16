@@ -13,6 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, recall_score, precision_score, plot_confusion_matrix
+from sklearn.metrics import f1_score
 
 from scipy.special import boxcox1p
 from scipy.stats import boxcox_normmax
