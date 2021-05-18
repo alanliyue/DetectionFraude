@@ -1,5 +1,3 @@
-# On importe le dataset
-
 import pandas as pd
 df = pd.read_csv("Projet_fraude.csv", sep=",")
 
@@ -76,22 +74,31 @@ pca.fit(X_train_scaled)
 X_train_smote_pca = pca.transform(X_train_scaled)
 X_test_pca =pca.transform(X_test_scaled)
 
-# On définit le modele LogisticRegression en logreg avec des paramètres trouvés précédemment
+# On définit le modele DecisionTreeClassifier en dtc avec des paramètres trouvés précédemment
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
 
-logreg=LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)
+from sklearn.metrics import accuracy_score,precision_score, recall_score
+
+clf=RandomForestClassifier(n_estimators=20,n_jobs=-1,max_depth=70)
 
 # On entraîne le modele sur les données d'entrainements
 
-logreg.fit(X_train_smote_pca, y_train_smote)
+clf.fit(X_train_smote_pca, y_train_smote)
+test["y_pred"] = clf.predict(X_test_pca)
 
 # On utilise pickle
 import pickle
-filename_logreg = 'finalized_model_logreg.sav'
-pickle.dump(logreg, open(filename_logreg, 'wb'))
+filename_clf = 'finalized_model_clf.sav'
+pickle.dump(clf, open(filename_clf, 'wb'))
+
+
+
+
+
+
+
+
 
 
 

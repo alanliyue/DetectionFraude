@@ -76,22 +76,20 @@ pca.fit(X_train_scaled)
 X_train_smote_pca = pca.transform(X_train_scaled)
 X_test_pca =pca.transform(X_test_scaled)
 
-# On définit le modele LogisticRegression en logreg avec des paramètres trouvés précédemment
+# On définit le modele KNeighborsClassifier en neigh avec des paramètres trouvés précédemment
 
-logreg=LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)
+from sklearn.neighbors import KNeighborsClassifier
+neigh = KNeighborsClassifier(metric= 'euclidean', n_neighbors= 2, weights= 'distance')
 
 # On entraîne le modele sur les données d'entrainements
 
-logreg.fit(X_train_smote_pca, y_train_smote)
+neigh.fit(X_train_smote_pca, y_train_smote)
+test["y_pred"] = neigh.predict(X_test_pca)
 
 # On utilise pickle
 import pickle
-filename_logreg = 'finalized_model_logreg.sav'
-pickle.dump(logreg, open(filename_logreg, 'wb'))
+filename_knn = 'finalized_model_knn.sav'
+pickle.dump(neigh, open(filename_knn, 'wb'))
 
 
 

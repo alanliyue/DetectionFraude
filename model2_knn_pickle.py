@@ -23,7 +23,7 @@ from scipy.special import boxcox1p
 from scipy.stats import boxcox_normmax
 from scipy.stats import skew, boxcox
 from sklearn import preprocessing
-
+import pickle
 # On supprime les colonnes pas utiles
 
 df=df.drop(columns="nameDest")
@@ -88,7 +88,7 @@ test["y_pred"] = neigh.predict(X_test_pca)
 
 # On utilise pickle
 filename_knn = 'finalized_model_knn.sav'
-pickle.dump(knn, open(filename_knn, 'wb'))
+pickle.dump(neigh, open(filename_knn, 'wb'))
 
 
 

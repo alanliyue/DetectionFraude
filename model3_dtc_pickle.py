@@ -1,5 +1,3 @@
-# On importe le dataset
-
 import pandas as pd
 df = pd.read_csv("Projet_fraude.csv", sep=",")
 
@@ -76,22 +74,34 @@ pca.fit(X_train_scaled)
 X_train_smote_pca = pca.transform(X_train_scaled)
 X_test_pca =pca.transform(X_test_scaled)
 
-# On définit le modele LogisticRegression en logreg avec des paramètres trouvés précédemment
+# On définit le modele DecisionTreeClassifier en dtc avec des paramètres trouvés précédemment
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score,precision_score, recall_score
 
-logreg=LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)
+dtc = DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
+                       max_depth=9, max_features=None, max_leaf_nodes=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=3, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, presort='deprecated',
+                       random_state=None, splitter='best')
 
 # On entraîne le modele sur les données d'entrainements
 
-logreg.fit(X_train_smote_pca, y_train_smote)
+dtc.fit(X_train_smote_pca, y_train_smote)
+
+test["y_pred"] = dtc.predict(X_test_pca)
 
 # On utilise pickle
 import pickle
-filename_logreg = 'finalized_model_logreg.sav'
-pickle.dump(logreg, open(filename_logreg, 'wb'))
+
+filename_dtc = 'finalized_model_dtc.sav'
+pickle.dump(dtc, open(filename_dtc, 'wb'))
+
+
+
+
+
+
 
 
 
