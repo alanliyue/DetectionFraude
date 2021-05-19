@@ -1,4 +1,10 @@
+# On importe le dataset
+
 import pandas as pd
+df = pd.read_csv("Projet_fraude.csv", sep=",")
+
+# On importe toutes les librairies dont on aura besoin
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -7,6 +13,8 @@ from imblearn.over_sampling import SMOTE
 
 
 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, recall_score, precision_score, plot_confusion_matrix
@@ -15,19 +23,7 @@ from scipy.special import boxcox1p
 from scipy.stats import boxcox_normmax
 from scipy.stats import skew, boxcox
 from sklearn import preprocessing
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import f1_score
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score,precision_score, recall_score
 
-from sklearn.decomposition import PCA
-import pickle
-from sklearn.preprocessing import StandardScaler
-
-# On importe le dataset
-
-import pandas as pd
-df = pd.read_csv("Projet_fraude.csv", sep=",")
 # On supprime les colonnes pas utiles
 
 df=df.drop(columns="nameDest")
@@ -55,7 +51,7 @@ X = features
 
 # On applique un SMOTE sur notre dataset
 
-oversample = SMOTE(ratio=0.42)
+oversample = SMOTE(sampling_strategy=0.42)
 x_train_smote, y_train_smote = oversample.fit_resample(train[X],train["isFraud"])
 
 # On applique une standardisation des données
@@ -80,36 +76,23 @@ pca.fit(X_train_scaled)
 X_train_smote_pca = pca.transform(X_train_scaled)
 X_test_pca =pca.transform(X_test_scaled)
 
-# On load le model dtc
-loaded_model = pickle.load(open('finalized_model_dtc.sav', 'rb'))
-result = loaded_model.score(X_test_pca, test["y_pred"])
-print("pickle :" + result)
+# On définit le modele LogisticRegression en logreg avec des paramètres trouvés précédemment
 
+logreg=LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class='auto', n_jobs=None, penalty='l2',
+                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
+                   warm_start=False)
 
+# On entraîne le modele sur les données d'entrainements
 
-print(accuracy_score(test["isFraud"],test["y_pred"]))
-print(precision_score(test["isFraud"],test["y_pred"]))
-print(recall_score(test["isFraud"],test["y_pred"]))
-print(f1_score(test["isFraud"],test["y_pred"]))
+logreg.fit(X_train_smote_pca, y_train_smote)
 
+# On utilise pickle
+import pickle
+filename_logreg = 'finalized_model_logreg.sav'
+pickle.dump(logreg, open(filename_logreg, 'wb'))
 
-
-from sklearn.metrics import roc_curve
-y_pred_prob=dtc.predict_proba(X_test_pca)[:,1]
-fpr, tpr, thresholds = roc_curve(test["y_pred"], y_pred_prob)
-
-plt.plot([0, 1], [0, 1], 'k--')
-plt.plot(fpr, tpr, label='Decision Tree Classifier')
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Decision Tree Classifier ROC Curve')
-plt.show()
-
-
-from sklearn.metrics import roc_auc_score
-
-y_pred = dtc.predict_proba(X_test_pca)[:,1]
-roc_auc_score(test["isFraud"], y_pred)
 
 
 

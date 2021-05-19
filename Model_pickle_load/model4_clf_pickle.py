@@ -12,7 +12,7 @@ from imblearn.over_sampling import SMOTE
 
 
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
+
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, recall_score, precision_score, plot_confusion_matrix
@@ -49,7 +49,7 @@ X = features
 
 # On applique un SMOTE sur notre dataset
 
-oversample = SMOTE(ratio=0.42)
+oversample = SMOTE(sampling_strategy=0.42)
 x_train_smote, y_train_smote = oversample.fit_resample(train[X],train["isFraud"])
 
 # On applique une standardisation des données
@@ -75,10 +75,7 @@ X_train_smote_pca = pca.transform(X_train_scaled)
 X_test_pca =pca.transform(X_test_scaled)
 
 # On définit le modele DecisionTreeClassifier en dtc avec des paramètres trouvés précédemment
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import f1_score
 
-from sklearn.metrics import accuracy_score,precision_score, recall_score
 
 clf=RandomForestClassifier(n_estimators=20,n_jobs=-1,max_depth=70)
 

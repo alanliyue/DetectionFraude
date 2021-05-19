@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,26 +8,29 @@ from imblearn.over_sampling import SMOTE
 
 
 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, recall_score, precision_score, plot_confusion_matrix
+from sklearn.metrics import f1_score
 
 from scipy.special import boxcox1p
 from scipy.stats import boxcox_normmax
 from scipy.stats import skew, boxcox
 from sklearn import preprocessing
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import f1_score
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score,precision_score, recall_score
 
-from sklearn.decomposition import PCA
+
+from sklearn.metrics import f1_score
+
+
+
 import pickle
 from sklearn.preprocessing import StandardScaler
 
 # On importe le dataset
 
-import pandas as pd
+
 df = pd.read_csv("Projet_fraude.csv", sep=",")
 # On supprime les colonnes pas utiles
 
@@ -55,12 +59,12 @@ X = features
 
 # On applique un SMOTE sur notre dataset
 
-oversample = SMOTE(ratio=0.42)
+oversample = SMOTE(sampling_strategy=0.42)
 x_train_smote, y_train_smote = oversample.fit_resample(train[X],train["isFraud"])
 
 # On applique une standardisation des données
 
-from sklearn.preprocessing import StandardScaler
+
 
 scaler = StandardScaler()
 # Fit on training set only.
@@ -80,41 +84,15 @@ pca.fit(X_train_scaled)
 X_train_smote_pca = pca.transform(X_train_scaled)
 X_test_pca =pca.transform(X_test_scaled)
 
-# On load le model clf
-loaded_model = pickle.load(open('finalized_model_clf.sav', 'rb'))
+# On load le model logreg
+loaded_model = pickle.load(open('finalized_model_logreg.sav', 'rb'))
+test["y_pred"] = loaded_model.predict(X_test_pca)
 result = loaded_model.score(X_test_pca, test["y_pred"])
-print("pickle :" + result)
 
 
-
-
+print(confusion_matrix(test["isFraud"],test["y_pred"]))
+print(classification_report(test["isFraud"],test["y_pred"]))
 print(accuracy_score(test["isFraud"],test["y_pred"]))
 print(precision_score(test["isFraud"],test["y_pred"]))
 print(recall_score(test["isFraud"],test["y_pred"]))
 print(f1_score(test["isFraud"],test["y_pred"]))
-
-
-from sklearn.metrics import roc_curve
-y_pred_prob=clf.predict_proba(X_test_pca)[:,1]
-fpr, tpr, thresholds = roc_curve(test["y_pred"], y_pred_prob)
-
-plt.plot([0, 1], [0, 1], 'k--')
-plt.plot(fpr, tpr, label='Classification Tree')
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Classification Tree ROC Curve')
-plt.show()
-
-
-from sklearn.metrics import roc_auc_score
-
-y_pred = clf.predict_proba(X_test_pca)[:,1]
-roc_auc_score(test["isFraud"], y_pred)
-
-
-
-
-
-
-
-
