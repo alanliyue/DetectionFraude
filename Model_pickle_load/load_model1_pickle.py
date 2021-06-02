@@ -89,6 +89,8 @@ loaded_model = pickle.load(open('finalized_model_logreg.sav', 'rb'))
 test["y_pred"] = loaded_model.predict(X_test_pca)
 result = loaded_model.score(X_test_pca, test["y_pred"])
 
+import time
+start_time = time.time()
 
 print(confusion_matrix(test["isFraud"],test["y_pred"]))
 print(classification_report(test["isFraud"],test["y_pred"]))
@@ -96,3 +98,25 @@ print(accuracy_score(test["isFraud"],test["y_pred"]))
 print(precision_score(test["isFraud"],test["y_pred"]))
 print(recall_score(test["isFraud"],test["y_pred"]))
 print(f1_score(test["isFraud"],test["y_pred"]))
+
+
+
+from sklearn.metrics import roc_curve
+
+y_pred_prob_logreg=loaded_model.predict_proba(X_test_pca)[:,1]
+fpr, tpr, thresholds = roc_curve(test["isFraud"], y_pred_prob_logreg)
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.plot(fpr, tpr, label='Logistic Regression')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Logistic Regression ROC Curve')
+plt.show()
+
+from sklearn.metrics import roc_auc_score
+
+y_pred = loaded_model.predict_proba(X_test_pca)[:,1]
+roc_auc_score(test["isFraud"], y_pred_prob_logreg)
+
+print("--- %s seconds ---" % (time.time() - start_time))
+

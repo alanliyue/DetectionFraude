@@ -86,7 +86,8 @@ loaded_model = pickle.load(open('finalized_model_dtc.sav', 'rb'))
 test["y_pred"] = loaded_model.predict(X_test_pca)
 result = loaded_model.score(X_test_pca, test["y_pred"])
 
-
+import time
+start_time = time.time()
 
 
 print(accuracy_score(test["isFraud"],test["y_pred"]))
@@ -98,7 +99,7 @@ print(f1_score(test["isFraud"],test["y_pred"]))
 
 from sklearn.metrics import roc_curve
 y_pred_prob=loaded_model.predict_proba(X_test_pca)[:,1]
-fpr, tpr, thresholds = roc_curve(test["y_pred"], y_pred_prob)
+fpr, tpr, thresholds = roc_curve(test["isFraud"], y_pred_prob)
 
 plt.plot([0, 1], [0, 1], 'k--')
 plt.plot(fpr, tpr, label='Decision Tree Classifier')
@@ -111,11 +112,11 @@ plt.show()
 from sklearn.metrics import roc_auc_score
 
 y_pred = loaded_model.predict_proba(X_test_pca)[:,1]
-print(roc_auc_score(test["isFraud"], y_pred))
+roc_auc_score(test["isFraud"], y_pred_prob)
 
 
 
-
+print("--- %s seconds ---" % (time.time() - start_time))
 
 
 
