@@ -7,7 +7,7 @@ and open the template in the editor.
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Fraud knn</title>
+        <title>Fraud logreg</title>
         
             <style>
 
@@ -111,7 +111,7 @@ and open the template in the editor.
     </h1>
     <div class="division1" data-cc-animate="">
     <h2 class = "message">
-        Testez votre dataset avec le model KNN
+        Testez votre dataset avec le model Logistic Regression
     </h2>
         
         
@@ -121,8 +121,8 @@ and open the template in the editor.
     <input class="fichier" type="file"
    id="dataset" name="dataset"
    accept=".csv">
-    <form action="Resultat_knn.php" method="POST">
-    <a href="Resultat_knn.php" target="_blank" class="bouton1">GO!</a>
+    <form action="Resultat_logreg.php" method="POST">
+    <a href="Resultat_logreg.php" target="_blank" class="bouton1">GO!</a>
     </form>
     
 
@@ -143,8 +143,3 @@ and open the template in the editor.
     #header('Location: Resultat_final_knn.php');
 ?>
 </html>
-
-
-
-
-   
