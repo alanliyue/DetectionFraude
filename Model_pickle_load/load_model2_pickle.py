@@ -109,7 +109,7 @@ plt.show()
 from sklearn.metrics import roc_auc_score
 
 y_pred = loaded_model.predict_proba(X_test_pca)[:,1]
-roc_auc_score(test["isFraud"], y_pred_prob)
+print(roc_auc_score(test["isFraud"], y_pred_prob))
 
 print("--- %s seconds ---" % (time.time() - start_time))
 
